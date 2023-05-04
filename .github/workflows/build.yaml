@@ -3,11 +3,8 @@ on:
   push:
     branches:
       - main
-    inputs:
-      environment:
-        description: 'Choose an environment to deploy to: <dev|staging|prod>'
-        required: true
-        default: 'dev'
+    environment:
+      default: 'dev'
   repository_dispatch:
   workflow_dispatch:
     inputs:
