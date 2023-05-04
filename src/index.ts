@@ -1,5 +1,5 @@
 import { Env } from "./types";
-import { errorHandler } from "./utils/errorHandler";
+// import { errorHandler } from "./utils/errorHandler";
 
 export default {
 	async fetch(request: Request, env: Env) {
