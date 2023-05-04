@@ -9,7 +9,11 @@
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^3.0.0",
+		"@types/aws-lambda": "^8.10.115",
 		"vitest": "^0.24.5",
 		"wrangler": "^2.1.14"
+	},
+	"dependencies": {
+		"@aws-sdk/client-cloudwatch-logs": "^3.326.0"
 	}
 }
