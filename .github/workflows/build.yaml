@@ -48,16 +48,16 @@ jobs:
           node-version: '18.x'
       - name: Install dependencies
         run: npm install
-      - name: Environment
+            - name: Environment
         run: |
           echo "Environment: $ENVIRONMENT"
         env:
-          NAME: ${{ inputs.name }}
-          ENVIRONMENT: ${{ inputs.environment }}
+          NAME: ${{ env.name }}
+          ENVIRONMENT: ${{ env.environment }}
       - name: Publish
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          command: publish --env ${{ inputs.environment }}
+          command: publish --env ${{ env.environment }}
         env:
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
