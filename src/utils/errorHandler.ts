@@ -48,6 +48,7 @@ export const errorHandler = async ({
 	req: Request,
 	res: Response,
 }): Promise<void> => {
+	// Instantiate CloudWatchLogsClient
 	const client = new CloudWatchLogsClient({ 
 		region: env.AWS_REGION, 
 		credentials: {
@@ -56,18 +57,21 @@ export const errorHandler = async ({
 		}
 	});
 
+	// Build date in yyyy-mm-dd form for CloudWatch stream name
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = today.getMonth() + 1 < 10 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
 	const day = today.getDate() < 10 ? `0${today.getDate()}` : today.getDate();
 	const currentDate = `${year}-${month}-${day}`;
 
+	// Build CloudWatch createLogStreamCommand
 	const createLogStreamCommandArg = {
 		env,
 		currentDate,
 	}
 	const createLogStreamCommand = createLogStreamCommandBuilder(createLogStreamCommandArg);
 
+	// Build CloudWatch putLogEventsCommand
 	const responseBody = await res.text();
 	const putLogEventsCommandArg = {
 		env,
@@ -79,6 +83,8 @@ export const errorHandler = async ({
 	};
 	const putLogEventsCommand = putLogEventsCommandBuilder(putLogEventsCommandArg);
 
+	// Try to create CloudWatch stream, catch error as it usually means the stream
+	// already exists, which is ok
 	try {
 		const awsRes = await client.send(createLogStreamCommand);
 		console.log(`CloudWatch createLogStream response: ${JSON.stringify(awsRes)}`);
@@ -86,6 +92,7 @@ export const errorHandler = async ({
 		console.log(`CloudWatch createLogStream error (if stream exists, can be ignored): ${JSON.stringify(err)}`);
 	}
 
+	// Send log 
 	const awsRes = await client.send(putLogEventsCommand);
 
 	console.log(`Helius response: ${JSON.stringify(putLogEventsCommandArg)}`);
