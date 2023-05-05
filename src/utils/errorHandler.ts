@@ -2,19 +2,27 @@ import { Env } from "../types";
 import { CloudWatchLogsClient, PutLogEventsCommand } from "@aws-sdk/client-cloudwatch-logs";
 
 const errorCommandBuilder = ({ 
+	env,
 	requestMethod, 
 	statusCode, 
 	statusMessage,
 	responseBody
 }: { 
+	env: Env,
 	requestMethod: string,
 	statusCode: number, 
 	statusMessage: string,
 	responseBody: string,  
 }): PutLogEventsCommand => {
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = today.getMonth() + 1 < 10 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
+	const day = today.getDate() < 10 ? `0${today.getDate()}` : today.getDate();
+	const currentDate = `${year}-${month}-${day}`;
+
 	return new PutLogEventsCommand({
-    logGroupName: '/CloudFlare',
-    logStreamName: 'RPCProxy',
+    logGroupName: env.AWS_CLOUDWATCH_LOG_GROUP,
+    logStreamName: currentDate,
     logEvents: [{
       timestamp: Date.now(),
       message: `Error ${requestMethod} ${statusCode} ${statusMessage} ${responseBody}`
@@ -41,6 +49,7 @@ export const errorHandler = async ({
 
 	const responseBody = await res.text();
 	const arg = {
+		env,
 		requestMethod: req.method,
 		statusCode: res.status, 
 		statusMessage: res.statusText,
