@@ -78,7 +78,7 @@ export default {
 		console.log(JSON.stringify(res.status));
 
 		if (res.status >= 400) {
-			await errorHandler({ env, res, req: request });
+			await errorHandler({ env, res: res.clone(), req: request });
 		}
 
 		console.log("after errorhandler");

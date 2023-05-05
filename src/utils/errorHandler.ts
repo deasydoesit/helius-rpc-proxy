@@ -40,13 +40,13 @@ export const errorHandler = async ({
 	});
 
 	console.log("errorHandler res body before");
-	const responseJson = await res.json() as {};
+	const responseBody = await res.text();
 	console.log("errorHandler res body after");
 	const command = errorCommandBuilder({ 
 		requestMethod: req.method,
 		statusCode: res.status, 
 		statusMessage: res.statusText,
-		responseBody: JSON.stringify(responseJson)
+		responseBody: responseBody
 	});
 	console.log(JSON.stringify(command));
 
