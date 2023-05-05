@@ -1,3 +1,4 @@
+import { Env } from "../types";
 import { CloudWatchLogsClient, PutLogEventsCommand } from "@aws-sdk/client-cloudwatch-logs";
 
 const errorCommandBuilder = ({ 
@@ -22,16 +23,21 @@ const errorCommandBuilder = ({
 }
 
 export const errorHandler = async ({ 
-	aws_region, 
+	env, 
 	req,
 	res 
 }: { 
-	aws_region: string, 
+	env: Env, 
 	req: Request,
 	res: Response ,
 }): Promise<void> => {
-	const client = new CloudWatchLogsClient({ region: aws_region });
-	console.log(res);
+	const client = new CloudWatchLogsClient({ 
+		region: env.AWS_REGION, 
+		credentials: {
+			accessKeyId: env.AWS_ACCESS_KEY_ID,
+			secretAccessKey: env.AWS_SECRET_ACCESS_KEY
+		}
+	});
 
 	const body = await res.text();
 	const command = errorCommandBuilder({ 
@@ -40,6 +46,7 @@ export const errorHandler = async ({
 		statusMessage: res.statusText,
 		responseBody: body
 	});
+	console.log(command);
 
 	const awsRes = await client.send(command);
 	console.log(awsRes);
