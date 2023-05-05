@@ -38,7 +38,6 @@ export const errorHandler = async ({
 			secretAccessKey: env.AWS_SECRET_ACCESS_KEY
 		}
 	});
-	console.log(res);
 
 	const body = await res.text();
 	const command = errorCommandBuilder({ 
@@ -47,6 +46,7 @@ export const errorHandler = async ({
 		statusMessage: res.statusText,
 		responseBody: body
 	});
+	console.log(command);
 
 	const awsRes = await client.send(command);
 	console.log(awsRes);
