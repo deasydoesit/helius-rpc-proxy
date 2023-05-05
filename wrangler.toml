@@ -9,6 +9,7 @@ AWS_REGION = "us-east-1"
 AWS_CLOUDWATCH_LOG_GROUP = "/CloudFlare/RPCProxy/Stagging"
 
 [env.production]
+name = "rpc-proxy"
 [env.production.vars]
 AWS_REGION = "us-east-1"
 AWS_CLOUDWATCH_LOG_GROUP = "/CloudFlare/RPCProxy/Production"
