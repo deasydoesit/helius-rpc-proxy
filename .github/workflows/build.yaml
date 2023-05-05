@@ -34,6 +34,6 @@ jobs:
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          command: publish --env ${{ github.event.inputs.environment }} --name ${{ github.event.inputs.name }}
+          command: publish --env ${{ inputs.environment }} --name ${{ inputs.name }}
         env:
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
