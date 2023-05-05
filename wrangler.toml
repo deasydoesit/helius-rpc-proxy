@@ -3,10 +3,10 @@ compatibility_date = "2022-05-03"
 
 [env.dev]
 name = "rpc-proxy-dev"
-[vars]
+[env.dev.vars]
 AWS_REGION = "us-east-1"
 
 [env.production]
 name = "rpc-proxy"
-[vars]
+[env.production.vars]
 AWS_REGION = "us-east-1"
