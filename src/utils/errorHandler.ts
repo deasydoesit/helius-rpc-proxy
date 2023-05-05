@@ -39,12 +39,12 @@ export const errorHandler = async ({
 		}
 	});
 
-	const body = await res.text();
+	const responseBody = await res.text();
 	const command = errorCommandBuilder({ 
 		requestMethod: req.method,
 		statusCode: res.status, 
 		statusMessage: res.statusText,
-		responseBody: body
+		responseBody: responseBody
 	});
 	console.log(command);
 
