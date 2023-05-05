@@ -27,10 +27,13 @@ jobs:
           node-version: '18.x'
       - name: Install dependencies
         run: npm install
+      - run: |
+          echo "Name: $NAME"
+          echo "Environment: $ENVIRONMENT"
       - name: Publish
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          command: publish --env ${{ github.event.environment }}
+          command: publish --env ${{ github.event.environment }} --name ${{ github.event.name }}
         env:
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
