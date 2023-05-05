@@ -48,7 +48,7 @@ export const errorHandler = async ({
 		statusMessage: res.statusText,
 		responseBody: responseBody
 	});
-	console.log(command);
+	console.log(JSON.stringify(command));
 
 	const awsRes = await client.send(command);
 	console.log(awsRes);

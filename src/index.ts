@@ -78,6 +78,9 @@ export default {
 			await errorHandler({ env, res, req: request });
 		}
 
+		console.log("after errorhandler");
+		console.log(JSON.stringify(res));
+
 		return res;
 	},
 };
