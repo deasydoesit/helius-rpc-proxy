@@ -21,9 +21,8 @@ jobs:
           node-version: '18.x'
       - name: Install dependencies
         run: npm install
-      - name: Environment vars
+      - name: Environment
         run: |
-          echo "Name: $NAME"
           echo "Environment: $ENVIRONMENT"
         env:
           NAME: ${{ env.name }}
@@ -49,9 +48,8 @@ jobs:
           node-version: '18.x'
       - name: Install dependencies
         run: npm install
-      - name: Environment vars
+      - name: Environment
         run: |
-          echo "Name: $NAME"
           echo "Environment: $ENVIRONMENT"
         env:
           NAME: ${{ inputs.name }}
