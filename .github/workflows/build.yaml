@@ -48,7 +48,7 @@ jobs:
           node-version: '18.x'
       - name: Install dependencies
         run: npm install
-            - name: Environment
+      - name: Environment
         run: |
           echo "Environment: $ENVIRONMENT"
         env:
