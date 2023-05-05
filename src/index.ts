@@ -52,16 +52,14 @@ export default {
       const res = await fetch(`https://${rpcNetwork}.helius.xyz/?api-key=${env.HELIUS_API_KEY}`, request);
 
 			if (res.status >= 400) {
-				await errorHandler({ env, res, req: request });
+				await errorHandler({ env, res: res.clone(), req: request });
 
 			}
 
 			return res
     }
 
-		console.log("index req body before");
 		const payload = await request.text();
-		console.log("index req body after");
 		const proxyRequest = new Request(`https://${pathname === "/" ? rpcNetwork : apiNetwork}.helius.xyz${pathname}?api-key=${env.HELIUS_API_KEY}${searchParams.toString() ? `&${searchParams.toString()}` : ""}`, {
 			method: request.method,
 			body: payload || null,
@@ -74,15 +72,9 @@ export default {
 
 		const res = await fetch(proxyRequest);
 
-		console.log("before errorhandler");
-		console.log(JSON.stringify(res.status));
-
 		if (res.status >= 400) {
 			await errorHandler({ env, res: res.clone(), req: request });
 		}
-
-		console.log("after errorhandler");
-		console.log(JSON.stringify(res.status));
 
 		return res;
 	},
