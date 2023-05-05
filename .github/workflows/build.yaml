@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  dev:
+  stagging:
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
     env:
-      environment: dev
+      environment: stagging
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
