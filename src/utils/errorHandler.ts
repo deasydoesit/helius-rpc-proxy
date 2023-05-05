@@ -40,13 +40,13 @@ export const errorHandler = async ({
 	});
 
 	console.log("errorHandler res body before");
-	// const responseBody = res.bodyUsed ? "body unavailable" : await res.text();
+	const responseJson = await res.json() as {};
 	console.log("errorHandler res body after");
 	const command = errorCommandBuilder({ 
 		requestMethod: req.method,
 		statusCode: res.status, 
 		statusMessage: res.statusText,
-		responseBody: ""
+		responseBody: JSON.stringify(responseJson)
 	});
 	console.log(JSON.stringify(command));
 
