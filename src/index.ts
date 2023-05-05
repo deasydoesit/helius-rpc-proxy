@@ -75,14 +75,14 @@ export default {
 		const res = await fetch(proxyRequest);
 
 		console.log("before errorhandler");
-		console.log(JSON.stringify(res));
+		console.log(JSON.stringify(res.status));
 
 		if (res.status >= 400) {
 			await errorHandler({ env, res, req: request });
 		}
 
 		console.log("after errorhandler");
-		console.log(JSON.stringify(res));
+		console.log(JSON.stringify(res.status));
 
 		return res;
 	},
