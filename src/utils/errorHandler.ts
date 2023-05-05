@@ -31,6 +31,7 @@ export const errorHandler = async ({
 	res: Response ,
 }): Promise<void> => {
 	const client = new CloudWatchLogsClient({ region: aws_region });
+	console.log(res);
 
 	const body = await res.text();
 	const command = errorCommandBuilder({ 
@@ -40,5 +41,6 @@ export const errorHandler = async ({
 		responseBody: body
 	});
 
-	await client.send(command);
+	const awsRes = await client.send(command);
+	console.log(awsRes);
 }
