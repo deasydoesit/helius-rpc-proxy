@@ -6,11 +6,15 @@ on:
     inputs:
       environment:
         default: 'dev'
+      name:
+        default: 'rpc-proxy-dev'
   repository_dispatch:
   workflow_dispatch:
     inputs:
       environment:
         default: 'production'
+      name:
+        default: 'rpc-proxy'
 jobs:
   deploy:
     runs-on: ubuntu-latest
