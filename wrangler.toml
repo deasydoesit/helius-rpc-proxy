@@ -4,11 +4,9 @@ compatibility_date = "2022-05-03"
 
 [env.stagging]
 workers_dev = true
-vars = {
-  AWS_REGION = "us-east-1"
-}
+[env.stagging.vars]
+AWS_REGION = "us-east-1"
 
 [env.production]
-vars = {
-  AWS_REGION = "us-east-1"
-}
+[env.production.vars]
+AWS_REGION = "us-east-1"
