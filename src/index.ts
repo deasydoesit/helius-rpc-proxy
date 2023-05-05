@@ -59,7 +59,9 @@ export default {
 			return res
     }
 
+		console.log("index req body before");
 		const payload = await request.text();
+		console.log("index req body after");
 		const proxyRequest = new Request(`https://${pathname === "/" ? rpcNetwork : apiNetwork}.helius.xyz${pathname}?api-key=${env.HELIUS_API_KEY}${searchParams.toString() ? `&${searchParams.toString()}` : ""}`, {
 			method: request.method,
 			body: payload || null,
