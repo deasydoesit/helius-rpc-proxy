@@ -52,11 +52,8 @@ export default {
       const res = await fetch(`https://${rpcNetwork}.helius.xyz/?api-key=${env.HELIUS_API_KEY}`, request);
 
 			if (res.status >= 400) {
-				await errorHandler({ 
-					aws_region: env.AWS_REGION,
-					req: request,
-					res,
-				});
+				await errorHandler({ env, res, req: request });
+
 			}
 
 			return res
@@ -76,11 +73,7 @@ export default {
 		const res = await fetch(proxyRequest);
 
 		if (res.status >= 400) {
-			await errorHandler({ 
-				aws_region: env.AWS_REGION,
-				req: request,
-				res,
-			});
+			await errorHandler({ env, res, req: request });
 		}
 
 		return res;
