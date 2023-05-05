@@ -6,7 +6,9 @@ compatibility_date = "2022-05-03"
 workers_dev = true
 [env.stagging.vars]
 AWS_REGION = "us-east-1"
+AWS_CLOUDWATCH_LOG_GROUP = "/CloudFlare/RPCProxy/Stagging"
 
 [env.production]
 [env.production.vars]
 AWS_REGION = "us-east-1"
+AWS_CLOUDWATCH_LOG_GROUP = "/CloudFlare/RPCProxy/Production"
