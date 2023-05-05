@@ -51,7 +51,7 @@ export const errorHandler = async ({
 	const awsRes = await client.send(command);
 
 	console.log(`Helius response: ${JSON.stringify(arg)}`);
-	console.log(`CloudWatch response: ${awsRes}`);
+	console.log(`CloudWatch response: ${JSON.stringify(awsRes)}`);
 
 	return;
 }
