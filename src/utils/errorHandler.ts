@@ -1,25 +1,34 @@
 import { Env } from "../types";
-import { CloudWatchLogsClient, PutLogEventsCommand } from "@aws-sdk/client-cloudwatch-logs";
+import { CloudWatchLogsClient, PutLogEventsCommand, CreateLogStreamCommand } from "@aws-sdk/client-cloudwatch-logs";
 
-const errorCommandBuilder = ({ 
+const createLogStreamCommandBuilder = ({ 
 	env,
+	currentDate
+}: { 
+	env: Env,
+	currentDate: string 
+}): CreateLogStreamCommand => {
+	return new CreateLogStreamCommand({
+    logGroupName: env.AWS_CLOUDWATCH_LOG_GROUP,
+    logStreamName: currentDate,
+  });
+}
+
+const putLogEventsCommandBuilder = ({ 
+	env,
+	currentDate,
 	requestMethod, 
 	statusCode, 
 	statusMessage,
 	responseBody
 }: { 
 	env: Env,
+	currentDate: string,
 	requestMethod: string,
 	statusCode: number, 
 	statusMessage: string,
 	responseBody: string,  
 }): PutLogEventsCommand => {
-	const today = new Date();
-	const year = today.getFullYear();
-	const month = today.getMonth() + 1 < 10 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
-	const day = today.getDate() < 10 ? `0${today.getDate()}` : today.getDate();
-	const currentDate = `${year}-${month}-${day}`;
-
 	return new PutLogEventsCommand({
     logGroupName: env.AWS_CLOUDWATCH_LOG_GROUP,
     logStreamName: currentDate,
@@ -47,20 +56,40 @@ export const errorHandler = async ({
 		}
 	});
 
-	const responseBody = await res.text();
-	const arg = {
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = today.getMonth() + 1 < 10 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
+	const day = today.getDate() < 10 ? `0${today.getDate()}` : today.getDate();
+	const currentDate = `${year}-${month}-${day}`;
+
+	const createLogStreamCommandArg = {
 		env,
+		currentDate,
+	}
+	const createLogStreamCommand = createLogStreamCommandBuilder(createLogStreamCommandArg);
+
+	const responseBody = await res.text();
+	const putLogEventsCommandArg = {
+		env,
+		currentDate,
 		requestMethod: req.method,
 		statusCode: res.status, 
 		statusMessage: res.statusText,
 		responseBody: responseBody
 	};
-	const command = errorCommandBuilder(arg);
+	const putLogEventsCommand = putLogEventsCommandBuilder(putLogEventsCommandArg);
 
-	const awsRes = await client.send(command);
+	try {
+		const awsRes = await client.send(createLogStreamCommand);
+		console.log(`CloudWatch createLogStream response: ${JSON.stringify(awsRes)}`);
+	} catch (err) {
+		console.log(`CloudWatch createLogStream error (if stream exists, can be ignored): ${JSON.stringify(err)}`);
+	}
 
-	console.log(`Helius response: ${JSON.stringify(arg)}`);
-	console.log(`CloudWatch response: ${JSON.stringify(awsRes)}`);
+	const awsRes = await client.send(putLogEventsCommand);
+
+	console.log(`Helius response: ${JSON.stringify(putLogEventsCommandArg)}`);
+	console.log(`CloudWatch log response: ${JSON.stringify(awsRes)}`);
 
 	return;
 }
