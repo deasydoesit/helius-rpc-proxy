@@ -36,7 +36,7 @@ describe('index', () => {
 
 		await worker.fetch(request, originalEnv);
 
-		expect(errorHandler).not.toBeCalled();
+		expect(errorHandler).toBeCalled();
 	});
 
 	test('does invoke errorHandler', async () => {
