@@ -1,3 +1,4 @@
+import { notDeepEqual } from 'assert';
 import fetch from 'node-fetch';
 import worker from '../index';
 import { errorHandler } from '../utils/errorHandler';
@@ -36,7 +37,7 @@ describe('index', () => {
 
 		await worker.fetch(request, originalEnv);
 
-		expect(errorHandler).toBeCalled();
+		expect(errorHandler).not.toBeCalled();
 	});
 
 	test('does invoke errorHandler', async () => {
