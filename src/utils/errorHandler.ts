@@ -1,60 +1,24 @@
-import { Env } from "../types";
-import { CloudWatchLogsClient, PutLogEventsCommand, CreateLogStreamCommand } from "@aws-sdk/client-cloudwatch-logs";
+import { Env } from '../types';
+import { CloudWatchLogsClient } from '@aws-sdk/client-cloudwatch-logs';
+import { createLogStreamCommandBuilder } from './createLogStreamCommandBuilder';
+import { putLogEventsCommandBuilder } from './putLogEventsCommandBuilder';
 
-const createLogStreamCommandBuilder = ({ 
+export const errorHandler = async ({
 	env,
-	currentDate
-}: { 
-	env: Env,
-	currentDate: string 
-}): CreateLogStreamCommand => {
-	return new CreateLogStreamCommand({
-    logGroupName: env.AWS_CLOUDWATCH_LOG_GROUP,
-    logStreamName: currentDate,
-  });
-}
-
-const putLogEventsCommandBuilder = ({ 
-	env,
-	currentDate,
-	requestMethod, 
-	statusCode, 
-	statusMessage,
-	responseBody
-}: { 
-	env: Env,
-	currentDate: string,
-	requestMethod: string,
-	statusCode: number, 
-	statusMessage: string,
-	responseBody: string,  
-}): PutLogEventsCommand => {
-	return new PutLogEventsCommand({
-    logGroupName: env.AWS_CLOUDWATCH_LOG_GROUP,
-    logStreamName: currentDate,
-    logEvents: [{
-      timestamp: Date.now(),
-      message: `Error ${requestMethod} ${statusCode} ${statusMessage} ${responseBody}`
-    }]
-  });
-}
-
-export const errorHandler = async ({ 
-	env, 
 	req,
-	res 
-}: { 
-	env: Env, 
-	req: Request,
-	res: Response,
+	res,
+}: {
+	env: Env;
+	req: Request;
+	res: Response;
 }): Promise<void> => {
 	// Instantiate CloudWatchLogsClient
-	const client = new CloudWatchLogsClient({ 
-		region: env.AWS_REGION, 
+	const client = new CloudWatchLogsClient({
+		region: env.AWS_REGION,
 		credentials: {
 			accessKeyId: env.AWS_ACCESS_KEY_ID,
-			secretAccessKey: env.AWS_SECRET_ACCESS_KEY
-		}
+			secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+		},
 	});
 
 	// Build date in yyyy-mm-dd form for CloudWatch stream name
@@ -68,7 +32,7 @@ export const errorHandler = async ({
 	const createLogStreamCommandArg = {
 		env,
 		currentDate,
-	}
+	};
 	const createLogStreamCommand = createLogStreamCommandBuilder(createLogStreamCommandArg);
 
 	// Build CloudWatch putLogEventsCommand
@@ -77,9 +41,9 @@ export const errorHandler = async ({
 		env,
 		currentDate,
 		requestMethod: req.method,
-		statusCode: res.status, 
+		statusCode: res.status,
 		statusMessage: res.statusText,
-		responseBody: responseBody
+		responseBody: responseBody,
 	};
 	const putLogEventsCommand = putLogEventsCommandBuilder(putLogEventsCommandArg);
 
@@ -89,14 +53,17 @@ export const errorHandler = async ({
 		const awsRes = await client.send(createLogStreamCommand);
 		console.log(`CloudWatch createLogStream response: ${JSON.stringify(awsRes)}`);
 	} catch (err) {
-		console.log(`CloudWatch createLogStream error (if stream exists, can be ignored): ${JSON.stringify(err)}`);
+		console.log(
+			`CloudWatch createLogStream error (if stream exists, can be ignored): ${JSON.stringify(err)}`
+		);
 	}
 
-	// Send log 
+	// Send log
 	const awsRes = await client.send(putLogEventsCommand);
 
-	console.log(`Helius response: ${JSON.stringify(putLogEventsCommandArg)}`);
+	const heliusResponse = `${putLogEventsCommandArg.statusCode} ${putLogEventsCommandArg.requestMethod} ${putLogEventsCommandArg.statusMessage} ${putLogEventsCommandArg.responseBody}`;
+	console.log(`Helius response: ${heliusResponse}`);
 	console.log(`CloudWatch log response: ${JSON.stringify(awsRes)}`);
 
 	return;
-}
+};
